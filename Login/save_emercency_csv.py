@@ -38,20 +38,7 @@ def get_new_msg():
         for row in reader:
             cities.append(row)
 
-    #사용자(어르신) 정보가져오기
-    #db 연결 
-    con = pymysql.connect(host='35.201.169.147', user='root', password='1thefull!',db='silverCare',charset='utf8')
-    #쿼리문통해 가져옴
-    with con: 
-        ELDERS=[]
-        cur = con.cursor()
-        cur.execute("SELECT ELDERLY_NAME,ELDERLY_ADDRESS1,ELDERLY_NO FROM silverCare.ELDERLY_INFO where CHAR_LENGTH(ELDERLY_ADDRESS1) > 1 ;")
-
-        rows = cur.fetchall()
-
-        for row in rows:
-            ELDERS.append(row) #이름, 주소
-
+    
     #API 발송!
     URL= "http://apis.data.go.kr/1741000/DisasterMsg2/getDisasterMsgList?ServiceKey=JCdCeC4ndtabahEXc%2BQFaXpfYNlnb5qGLlG87NZuchzyB72UAzlRHDEbTBuhTvqSibuNj3QVizylRgAzEbmSgA%3D%3D&type=json&pageNo=1&numOfRows=10"
 
@@ -121,38 +108,9 @@ def get_new_msg():
 
 
        
-        #full_location = 경기도 김포시
-        #seperate_location = 경기도
-        #city = [경기도,경기 ...]
-        #ELDERS=[이름,주소,고유식별번호] 우선.
         
-        #날린 문자갯수
-        count=1
-        for seperate_location in full_location.split(','):
-
-            for city in cities:
-                
-                if city[0] ==seperate_location.split(' ')[0]:
-                    for olds in ELDERS:
-                        #도시 확인
-                        if olds[1].split(' ')[0] in city:
-                            #시/군/구 확인 
-                            #전체면 모두 발싸
-                            if seperate_location.split(' ')[1] == "전체":
-                                print(str(olds) +" 문자내용 :" +msg_str)
-                                count+=1
-                            #전체가 아니면 시/군/구 확인후 발사
-                            elif seperate_location.split(' ')[1] == olds[1].split(' ')[1]:
-                                print(str(olds) +" 문자내용 :" +msg_str)
-                                count+=1
-                            #해당사항없으면 발사 안함
-                            else:
-                                break
-        
-        print(str(count) + "번 만큼의 사람들에게 재난 문자를 보내야합니다.")
             
 
 
             
 
-get_new_msg()
